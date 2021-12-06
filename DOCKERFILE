@@ -16,5 +16,6 @@ WORKDIR /opt/gremlin-server/conf/ssl
 # RUN /bin/bash -c "openssl req -x509 -out localhost.crt -keyout localhost.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <(printf '[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth')"
 # RUN keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 # RUN keytool -genkey -dname "cn=localhost" -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass localPass -validity 360 -keysize 2048
+# RUN keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
 RUN keytool -import -noprompt -trustcacerts -file localhost.crt -keystore keystore.jks -storepass localPass
 WORKDIR /opt/gremlin-server
