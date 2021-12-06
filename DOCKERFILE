@@ -1,0 +1,20 @@
+# Grab vanilla image
+FROM docker.repo1.uhc.com/tinkerpop/gremlin-server:3.4.11
+# Copy our settings over
+RUN mkdir -p conf/ssl
+ADD --chown=gremlin ./conf/gremlin-server.yaml conf/gremlin-server.yaml
+ADD --chown=gremlin ./conf/tinkergraph-empty.properties conf/tinkergraph-empty.properties
+
+ADD --chown=gremlin ./conf/ssl/keystore.jks conf/ssl/keystore.jks
+ADD --chown=gremlin ./conf/ssl/localhost.crt conf/ssl/localhost.crt
+ADD --chown=gremlin ./conf/ssl/localhost.key conf/ssl/localhost.key
+
+USER root
+RUN apk add openssl
+USER gremlin
+WORKDIR /opt/gremlin-server/conf/ssl
+# RUN /bin/bash -c "openssl req -x509 -out localhost.crt -keyout localhost.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <(printf '[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth')"
+# RUN keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+# RUN keytool -genkey -dname "cn=localhost" -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass localPass -validity 360 -keysize 2048
+RUN keytool -import -noprompt -trustcacerts -file localhost.crt -keystore keystore.jks -storepass localPass
+WORKDIR /opt/gremlin-server

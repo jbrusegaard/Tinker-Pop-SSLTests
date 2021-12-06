@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+    neptune:
+        build:
+          context: .
+          dockerfile: DOCKERFILE
+        ports:
+          - 8182:8182
+        volumes: 
+            - ./conf/ssl:/opt/gremlin-server/conf/ssl:cached
+        depends_on:
+          - db
+        networks: 
+          - database_network
+
+networks:
+    database_network:
+        driver: bridge
