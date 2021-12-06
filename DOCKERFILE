@@ -1,5 +1,5 @@
 # Grab vanilla image
-FROM docker.repo1.uhc.com/tinkerpop/gremlin-server:3.4.11
+FROM tinkerpop/gremlin-server:3.4.11
 # Copy our settings over
 RUN mkdir -p conf/ssl
 ADD --chown=gremlin ./conf/gremlin-server.yaml conf/gremlin-server.yaml
